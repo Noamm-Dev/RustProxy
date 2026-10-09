@@ -80,8 +80,16 @@ async fn handle_client(mut client: TcpStream) -> Result<()> {
 
     target.write_all(&login_start).await?;
 
+    println!("➡️ {username} joined");
+    let start = Instant::now();
     let _ = copy_bidirectional(&mut client, &mut target).await;
+    println!("⬅️ {username} left after {}", format_duration(start.elapsed()));
     Ok(())
+}
+
+fn format_duration(duration: Duration) -> String {
+    let secs = duration.as_secs();
+    format!("{:02}:{:02}:{:02}", secs / 3600, secs / 60 % 60, secs % 60)
 }
 
 async fn connect(host: &str) -> Result<TcpStream> {
