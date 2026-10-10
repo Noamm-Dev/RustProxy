@@ -39,6 +39,7 @@ async fn main() {
 }
 
 async fn handle_client(mut client: TcpStream) -> Result<()> {
+    client.set_nodelay(true)?;
     let Ok(handshake_raw) = read_raw_packet(&mut client).await else { return Ok(()) };
     let next_state = packet_utils::get_next_state(&handshake_raw).ok_or_else(|| invalid("Malformed handshake"))?;
 
